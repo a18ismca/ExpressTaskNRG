@@ -1,53 +1,33 @@
 
 // Express.js config
 const express = require('express')
-
-// Body parser declaration
-const bodyParser = require('body-parser')
-
-// CORS Middleware config
-const corsMiddleware = require('cors')
-
 const app = express()
 const port = 3000
 
-// Create a list of users. This will be used to compare the 
-// items stored in the same array
-let users = []
 
-app.use(corsMiddleware())
+var person = [{id: "1999", name:"Ismet", salary:"2000"}]
 
-// Body parser middleware config
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-// Send hello world! GET request
-app.get('/', (req, res) => {
-    res.send('Bok world');
+app.get('/persons', (req, res) => {
+    res.send(person)
 })
 
-// For testing purposes. When clicking on the "Create user" button 
-// the user will be directed to localhost:3000/user
-// where he/she will be informed that a user has been added to a database.
-app.post('/user', (req, res) => {
-
-    const user = req.body
-    users.push(user)
-    console.log(users)
-
-    
-    
-    res.send("A user has been added to database!")
+//Check if the person exists by checking ID.
+app.get('/persons/:id', (req, res) => {
+    const getPersonId = person.find(p => p.id === parseInt(req.params.id))
+    if (!getPersonId) res.status(404).send("The person with the given ID does not exist.")
+    res.send(person)
 })
 
-
-
+//
+app.get('/persons/:id/:name/:salary/:gender', (req, res) => {
+    res.send(req.params)
+})
 
 // Listening on the port. Listen to incoming code. 
 app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 
-//app.get() gets data
-//app.post() creates data
-//app.put() updates data
-//app.delete() delete data. not neccesary for this task.
+//app.get() gets data. SAFE!
+//app.post() creates data.
+//app.put() updates data. unsafe.
+//app.delete() deletes data. unsafe.
